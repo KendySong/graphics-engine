@@ -8,9 +8,7 @@ Application::Application()
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	p_window = SDL_CreateWindow(stg::TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, stg::WIDTH, stg::HEIGHT, SDL_WINDOW_SHOWN);
-	p_renderer = SDL_CreateRenderer(p_window, -1, 0);
-
-	
+	SDL_Renderer* renderer = SDL_CreateRenderer(p_window, -1, 0);
 }
 
 Application* Application::Instance()
@@ -42,7 +40,10 @@ int Application::Run()
 		this->PollEvents();
 
 		//Update
+		
 
-		//Render
+		m_graphics.clear();
+		//draw
+		m_graphics.render();
 	}
 }

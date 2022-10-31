@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL/SDL.h>
 
+#include "Graphics.hpp"
+
 class Application
 {
 private :
@@ -15,8 +17,8 @@ private :
 	void PollEvents();
 
 	static Application* p_application;
+	Graphics m_graphics;
 	SDL_Window* p_window;
-	SDL_Renderer* p_renderer;
 	SDL_Event m_event;
 	bool m_isRunning;
 };
