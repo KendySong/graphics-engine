@@ -9,6 +9,7 @@ Application::Application()
 	SDL_Init(SDL_INIT_EVERYTHING);
 	p_window = SDL_CreateWindow(stg::TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, stg::WIDTH, stg::HEIGHT, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(p_window, -1, 0);
+	m_graphics = Graphics(renderer);
 }
 
 Application* Application::instance()
@@ -44,6 +45,9 @@ int Application::run()
 		m_deltaClock.restart();
 
 		m_graphics.clear();		
+		m_graphics.drawPixel(Vec2(100, 100), 0xFFFF00FF);
 		m_graphics.render();
 	}
+
+	return EXIT_SUCCESS;
 }

@@ -8,9 +8,9 @@ project "graphics-engine"
     language "C++"
     location "build"
 
-    files {"include/**.h", "include/**.hpp", "src/**.cpp"}    
+    files {"src/**.h", "src/**.hpp", "src/**.cpp"}    
 
-    includedirs {"libraries/*", "include"}
+    includedirs {"libraries/*"}
     libdirs "libraries/lib"
     links {"SDL2", "SDL2main"}
 

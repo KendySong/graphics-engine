@@ -3,20 +3,25 @@
 
 #include <SDL/SDL.h>
 
+#include "../Math/Vec2.hpp"
+
 class Graphics
 {
-private :
+public :
+    Graphics() = default;
+
     Graphics(SDL_Renderer* renderer);
 
-public :
-    void setFrameBuffer(std::uint32_t frameBuffer);
+    void setFrameBuffer(std::uint32_t* frameBuffer);
 
     void clear();
+
+    void drawPixel(const Vec2& position, std::uint32_t color);
 
     void render();
     
 private :
-    std::uint32_t p_frameBuffer;
+    std::uint32_t* p_frameBuffer;
     SDL_Renderer* p_renderer;
     SDL_Texture* p_frameTexture;
 };

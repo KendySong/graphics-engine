@@ -56,6 +56,11 @@ Vec2 operator/(const Vec2& vec1, const Vec2& vec2)
     return {vec1.x / vec2.x, vec1.y / vec2.y};
 }
 
+Vec2 operator/(const Vec2& vec, float scalar)
+{
+    return { vec.x / scalar, vec.y / scalar };
+}
+
 bool operator==(Vec2& vec1, Vec2& vec2)
 {
     return vec1.x == vec2.x && vec1.y == vec2.y;

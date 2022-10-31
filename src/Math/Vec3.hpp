@@ -21,4 +21,5 @@ Vec3 operator+(const Vec3& vec1, const Vec3& vec2) noexcept;
 Vec3 operator-(const Vec3& vec1, const Vec3& vec2) noexcept;
 Vec3 operator*(const Vec3& vec1, const Vec3& vec2) noexcept;
 Vec3 operator/(const Vec3& vec1, const Vec3& vec2) noexcept;
+Vec3 operator/(const Vec3& vec, float scalar) noexcept;
 bool operator==(Vec3& vec1, Vec3& vec2) noexcept;
