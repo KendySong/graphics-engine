@@ -44,8 +44,8 @@ int Application::run()
 		float deltaTime = m_deltaClock.getElapsedTime();
 		m_deltaClock.restart();
 
-		m_graphics.clear();		
-		m_graphics.drawPixel(Vec2(100, 100), 0xFFFF00FF);
+		m_graphics.clear();
+		m_graphics.drawPixel(Vec2(200, 200), 0xFFFF00FF);
 		m_graphics.render();
 	}
 

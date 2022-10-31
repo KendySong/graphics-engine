@@ -24,7 +24,12 @@ void Graphics::clear()
 
 void Graphics::drawPixel(const Vec2& position, std::uint32_t color)
 {
-    p_frameBuffer[(int)(stg::WIDTH * (int)position.y + (int)position.x)] = color;
+    p_frameBuffer[(int)(stg::WIDTH * position.y + position.x)] = color;
+}
+
+void Graphics::drawLine(const Vec2& pos1, const Vec2& pos2)
+{
+
 }
 
 void Graphics::render()

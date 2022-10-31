@@ -8,8 +8,8 @@ Vec2::Vec2()
 
 Vec2::Vec2(float x, float y)
 {
-    x = x;
-    y = y;
+    this->x = x;
+    this->y = y;
 }
 
 void Vec2::operator+=(const Vec2& vec) noexcept

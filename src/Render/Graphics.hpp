@@ -18,6 +18,8 @@ public :
 
     void drawPixel(const Vec2& position, std::uint32_t color);
 
+    void drawLine(const Vec2& pos1, const Vec2& pos2);
+
     void render();
     
 private :
