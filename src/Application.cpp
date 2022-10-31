@@ -39,11 +39,11 @@ int Application::run()
 	{
 		this->pollEvents();
 
-		//Update
+		//(milliseconds)
+		float deltaTime = m_deltaClock.getElapsedTime();
+		m_deltaClock.restart();
 
-
-		m_graphics.clear();
-		//draw
+		m_graphics.clear();		
 		m_graphics.render();
 	}
 }

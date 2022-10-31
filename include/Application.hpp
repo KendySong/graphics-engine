@@ -1,7 +1,8 @@
 #pragma once
 #include <SDL/SDL.h>
 
-#include "Graphics.hpp"
+#include "Render/Graphics.hpp""
+#include "Timer.hpp"
 
 class Application
 {
@@ -21,4 +22,6 @@ private :
 	SDL_Window* p_window;
 	SDL_Event m_event;
 	bool m_isRunning;
+
+	Timer m_deltaClock;
 };
