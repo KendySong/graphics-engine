@@ -14,6 +14,7 @@ public :
     void clear();
 
     void render();
+    
 private :
     std::uint32_t p_frameBuffer;
     SDL_Renderer* p_renderer;

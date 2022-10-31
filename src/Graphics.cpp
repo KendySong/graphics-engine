@@ -17,10 +17,9 @@ void Graphics::setFrameBuffer(std::uint32_t frameBuffer)
 
 void Graphics::clear()
 {
+    memset(p_frameTexture, 0, stg::WIDTH * stg::HEIGHT * sizeof std::uint32_t);
     SDL_SetRenderDrawColor(p_renderer, 0, 0, 0, 255);
     SDL_RenderClear();
-
-    memset(p_frameTexture, 0, stg::WIDTH * stg::HEIGHT * sizeof std::uint32_t);
 }
 
 void Graphics::render()

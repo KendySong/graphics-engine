@@ -9,12 +9,12 @@ private :
 	Application();
 
 public :
-	static Application* Instance();
+	static Application* instance();
 
-	int Run();
+	int run();
 
 private :
-	void PollEvents();
+	void pollEvents();
 
 	static Application* p_application;
 	Graphics m_graphics;

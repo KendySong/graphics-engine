@@ -11,7 +11,7 @@ Application::Application()
 	SDL_Renderer* renderer = SDL_CreateRenderer(p_window, -1, 0);
 }
 
-Application* Application::Instance()
+Application* Application::instance()
 {
 	if (p_application == nullptr)
 	{
@@ -20,7 +20,7 @@ Application* Application::Instance()
 	return p_application;
 }
 
-void Application::PollEvents()
+void Application::pollEvents()
 {
 	while (SDL_PollEvent(&m_event))
 	{
@@ -33,14 +33,14 @@ void Application::PollEvents()
 	}
 }
 
-int Application::Run()
+int Application::run()
 {
 	while (m_isRunning)
 	{
-		this->PollEvents();
+		this->pollEvents();
 
 		//Update
-		
+
 
 		m_graphics.clear();
 		//draw
