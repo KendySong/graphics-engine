@@ -11,6 +11,7 @@ public :
     void restart();
 
 	float getElapsedTime();
+
 private :
     #ifdef _MSC_VER
         std::chrono::time_point<std::chrono::steady_clock> _start;

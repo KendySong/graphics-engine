@@ -18,5 +18,5 @@ void Timer::restart()
 float Timer::getElapsedTime()
 {
 	_stop = std::chrono::high_resolution_clock::now();
-	return std::chrono::duration_cast<std::chrono::milliseconds>(_stop - _start).count();
+	return std::chrono::duration_cast<std::chrono::microseconds>(_stop - _start).count();
 }
