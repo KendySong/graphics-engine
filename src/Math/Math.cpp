@@ -42,3 +42,59 @@ Vec3 Math::normalize(const Vec3& vec) noexcept
     float length = Math::magnitude(vec);
     return vec / length;
 }
+
+Vec3 Math::rotateX(const Vec3& vec, float angle)
+{
+    angle += atan2f(vec.y, vec.z);
+    float length = Math::magnitude({ vec.y, vec.z });
+
+    Vec3 rotated
+    {
+        vec.x,
+        length * sin(angle),
+        length * cos(angle)
+    };
+    return rotated;
+}
+
+Vec3 Math::rotateY(const Vec3& vec, float angle)
+{
+    angle += atan2(vec.z, vec.x);
+    float length = Math::magnitude({ vec.x, vec.z });
+
+    Vec3 rotated
+    {
+        length * sin(angle),
+        vec.y,
+        length * cos(angle)
+    };
+    return rotated;
+}
+
+Vec3 Math::rotateZ(const Vec3& vec, float angle)
+{
+    angle += atan2f(vec.y, vec.x);
+    float length = Math::magnitude({ vec.x, vec.y });
+
+    Vec3 rotated
+    {
+        length * sin(angle),
+        length * cos(angle),
+        vec.z
+    };
+    return rotated;  
+}
+
+Vec2 Math::projectPerspective(const Vec3& pos)
+{
+    return Vec2
+    {
+        (pos.x * 128 / pos.z) + 640,
+        (pos.y * 128 / pos.z) + 360,
+    };
+}
+
+Vec2 Math::projectOrthographic(const Vec3& pos)
+{
+    return Vec2(pos.x, pos.y);
+}
