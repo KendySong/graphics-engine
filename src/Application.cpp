@@ -1,3 +1,5 @@
+#include <vector>
+
 #include "Application.hpp"
 #include "Settings.hpp"
 
@@ -36,15 +38,36 @@ void Application::pollEvents()
 
 int Application::run()
 {
+	std::vector<Vec3> points;
+	for (float x = -1; x < 1; x += 0.25)
+	{
+		for (float y = -1; y < 1; y += 0.25)
+		{
+			for (float z = -1; z < 1; z += 0.25)
+			{
+				points.emplace_back(x, y, z);
+			}
+		}
+	}
+
+	float angle = 0;
 	while (m_isRunning)
 	{
 		this->pollEvents();
 
-		//(milliseconds)
-		float deltaTime = m_deltaClock.getElapsedTime();
+		float deltaTime = m_deltaClock.getElapsedTime() * 0.000001;
 		m_deltaClock.restart();
 
 		m_graphics.clear();
+
+		angle += deltaTime;
+		for (size_t i = 0; i < points.size(); i++)
+		{
+			Vec3 rotated = Math::rotateZ(points[i], angle);
+			rotated.z -= 5;
+			Vec2 pos = Math::projectPerspective(rotated);
+			m_graphics.drawPixel(pos, 0xFF00FF00);
+		}
 
 		m_graphics.render();
 	}
