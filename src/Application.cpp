@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "Application.hpp"
 #include "Settings.hpp"
 
@@ -8,10 +6,14 @@ Application::Application()
 {
 	m_isRunning = true;
 
+	//Init sdl and graphics
 	SDL_Init(SDL_INIT_EVERYTHING);
 	p_window = SDL_CreateWindow(stg::TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, stg::WIDTH, stg::HEIGHT, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(p_window, -1, 0);
 	m_graphics = Graphics(renderer);
+
+	//Load scene
+	m_scene.loadModel("../assets/teapot.obj");
 }
 
 Application* Application::instance()
@@ -38,18 +40,6 @@ void Application::pollEvents()
 
 int Application::run()
 {
-	std::vector<Vec3> points;
-	for (float x = -1; x < 1; x += 0.25)
-	{
-		for (float y = -1; y < 1; y += 0.25)
-		{
-			for (float z = -1; z < 1; z += 0.25)
-			{
-				points.emplace_back(x, y, z);
-			}
-		}
-	}
-
 	float angle = 0;
 	while (m_isRunning)
 	{
@@ -61,13 +51,36 @@ int Application::run()
 		m_graphics.clear();
 
 		angle += deltaTime;
-		for (size_t i = 0; i < points.size(); i++)
+		std::vector<Mesh>& sceneMeshes = m_scene.getMeshes();
+		for (size_t i = 0; i < sceneMeshes.size(); i++)
 		{
-			Vec3 rotated = Math::rotateZ(points[i], angle);
-			rotated.z -= 5;
-			Vec2 pos = Math::projectPerspective(rotated);
-			m_graphics.drawPixel(pos, 0xFF00FF00);
+			for (size_t j = 0; j < sceneMeshes[i].faceIndex.size(); j++)
+			{
+				Vec2 a, b, c;
+				Vec3 x, y, z;
+
+				x = Math::rotateY(sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].a - 1], angle);
+				y = Math::rotateY(sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].b - 1], angle);
+				z = Math::rotateY(sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].c - 1], angle);
+
+				x.z -= 4;
+				y.z -= 4;
+				z.z -= 4;
+
+				a = Math::projectPerspective(x);
+				b = Math::projectPerspective(y);
+				c = Math::projectPerspective(z);
+
+				m_graphics.drawTriangle
+				(
+					a,
+					b,
+					c,
+					0xFF00FF00
+				);
+			}
 		}
+		
 
 		m_graphics.render();
 	}

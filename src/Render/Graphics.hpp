@@ -3,6 +3,7 @@
 
 #include <SDL/SDL.h>
 
+#include "Face.hpp"
 #include "../Math/Math.hpp"
 
 class Graphics
