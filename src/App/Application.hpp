@@ -1,9 +1,10 @@
 #pragma once
 #include <SDL/SDL.h>
 
-#include "Render/Graphics.hpp""
 #include "Timer.hpp"
-#include "Render/Scene.hpp"
+#include "Sandbox.hpp"
+#include "../Render/Graphics.hpp"
+#include "../Render/Scene.hpp"
 
 class Application
 {
@@ -25,5 +26,5 @@ private :
 	bool m_isRunning;
 
 	Timer m_deltaClock;
-	Scene m_scene;
+	Sandbox m_sandBox;
 };
