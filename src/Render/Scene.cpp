@@ -4,7 +4,7 @@
 
 #include "Scene.hpp"
 
-void Scene::loadModel(const char* path)
+void Scene::loadModel(const char* path, formatOBJ type)
 {
 	std::ifstream fileReader(path);
 	if (fileReader.is_open())
@@ -25,22 +25,26 @@ void Scene::loadModel(const char* path)
 
 			if (currentLine.compare(0, 2, "f ") == 0)
 			{
-				/*
 				Face face;
 				Face tex;
 				Face normal;
-				sscanf_s(currentLine.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d",
-					&face.a, &tex.a, &normal.a,
-					&face.b, &tex.b, &normal.b,
-					&face.c, &tex.c, &normal.c
-				);
-				
-				m_meshes[lastIndex].faceIndex.push_back(face);
-				*/
 
-				Face face;
-				sscanf_s(currentLine.c_str(), "f %d %d %d", &face.a, &face.b, &face.c);
-				m_meshes[lastIndex].faceIndex.push_back(face);
+				switch (type)
+				{
+				case formatOBJ::fvvv:
+					sscanf_s(currentLine.c_str(), "f %d %d %d", &face.a, &face.b, &face.c);
+					m_meshes[lastIndex].faceIndex.push_back(face);
+					break;
+
+				case formatOBJ::fvtn:				
+					sscanf_s(currentLine.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d",
+						&face.a, &tex.a, &normal.a,
+						&face.b, &tex.b, &normal.b,
+						&face.c, &tex.c, &normal.c
+					);
+					m_meshes[lastIndex].faceIndex.push_back(face);
+					break;
+				}
 			}
 		}
 	}

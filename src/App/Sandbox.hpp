@@ -17,5 +17,6 @@ private :
 	Scene m_scene;
 
 	Vec3 pos;
+	Vec3 camera;
 	float angle = 0;
 };
