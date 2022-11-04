@@ -1,3 +1,7 @@
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_sdl.h>
+#include <ImGui/imgui_impl_sdlrenderer.h>
+
 #include "Application.hpp"
 #include "../Settings.hpp"
 
@@ -11,6 +15,11 @@ Application::Application()
 	p_window = SDL_CreateWindow(stg::TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, stg::WIDTH, stg::HEIGHT, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(p_window, -1, 0);
 	m_graphics = Graphics(renderer);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplSDL2_InitForSDLRenderer(p_window, renderer);
+	ImGui_ImplSDLRenderer_Init(renderer);
 
 	m_sandBox.load();
 }
@@ -28,6 +37,7 @@ void Application::pollEvents()
 {
 	while (SDL_PollEvent(&m_event))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&m_event);
 		switch (m_event.type)
 		{
 		case SDL_QUIT :
@@ -47,7 +57,7 @@ int Application::run()
 		m_deltaClock.restart();
 		m_sandBox.update(deltaTime);
 
-		m_graphics.clear();
+		m_graphics.clear(p_window);
 		m_sandBox.draw(m_graphics);
 		m_graphics.render();
 	}

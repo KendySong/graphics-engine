@@ -15,7 +15,7 @@ public :
 
     void setFrameBuffer(std::uint32_t* frameBuffer)  noexcept;
 
-    void clear() const;
+    void clear(SDL_Window* window) const;
 
     void drawPixel(const Vec2& position, std::uint32_t color);
 

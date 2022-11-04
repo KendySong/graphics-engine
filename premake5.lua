@@ -8,7 +8,7 @@ project "graphics-engine"
     language "C++"
     location "build"
 
-    files {"src/**.h", "src/**.hpp", "src/**.cpp"}    
+    files {"src/**.h", "src/**.hpp", "src/**.cpp", "libraries/include/ImGui/*.cpp"}    
 
     includedirs {"libraries/*"}
     libdirs "libraries/lib"

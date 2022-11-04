@@ -1,5 +1,9 @@
 #include <cstring>
 
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_sdl.h>
+#include <ImGui/imgui_impl_sdlrenderer.h>
+
 #include "Graphics.hpp"
 #include "../Settings.hpp"
 
@@ -15,11 +19,15 @@ void Graphics::setFrameBuffer(std::uint32_t* frameBuffer) noexcept
     p_frameBuffer = frameBuffer;
 }
 
-void Graphics::clear() const
+void Graphics::clear(SDL_Window* window) const
 {
     SDL_SetRenderDrawColor(p_renderer, 0, 0, 0, 255);
     SDL_RenderClear(p_renderer);
     memset(p_frameBuffer, 0, stg::WIDTH * stg::HEIGHT * sizeof std::uint32_t);
+
+    ImGui_ImplSDLRenderer_NewFrame();
+    ImGui_ImplSDL2_NewFrame(window);
+    ImGui::NewFrame();
 }
 
 void Graphics::drawPixel(const Vec2& position, std::uint32_t color)
@@ -56,7 +64,6 @@ void Graphics::drawRect(const Vec2& pos, const Vec2& size, std::uint32_t color)
             this->drawPixel(Vec2(x, y), color);
         }
     }
-    
 }
 
 void Graphics::drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
@@ -70,5 +77,8 @@ void Graphics::render() const
 {
     SDL_UpdateTexture(p_frameTexture, NULL, p_frameBuffer, stg::WIDTH * sizeof std::uint32_t);
     SDL_RenderCopy(p_renderer, p_frameTexture, NULL, NULL);
+
+    ImGui::Render();
+    ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(p_renderer);
 }
