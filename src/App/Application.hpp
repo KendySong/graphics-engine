@@ -27,4 +27,7 @@ private :
 
 	Timer m_deltaClock;
 	Sandbox m_sandBox;
+
+	Timer m_framerateClock;
+	unsigned int m_fps;
 };

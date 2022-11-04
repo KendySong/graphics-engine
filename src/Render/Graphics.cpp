@@ -75,7 +75,7 @@ void Graphics::drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3
 
 bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)
 {
-    if (Math::dot(Math::cross(b - a, c - a), camera) > 4)
+    if (Math::dot(Math::normalize(Math::cross(b - a, c - a)), camera - a) > 2)
     {
         return true;
     }

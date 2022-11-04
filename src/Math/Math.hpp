@@ -31,4 +31,7 @@ public :
     static Vec2 projectPerspective(const Vec3& pos);
 
     static Vec2 projectOrthographic(const Vec3& pos);
+
+    //Misc
+    static float toRadian(float angle);
 };

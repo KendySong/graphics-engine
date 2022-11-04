@@ -19,5 +19,5 @@ private :
 	Vec3 pos;
 	Vec3 camera;
 	float angle = 0;
-	bool turn;
+	bool cull;
 };

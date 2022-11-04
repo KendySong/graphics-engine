@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include "Math.hpp"
@@ -97,4 +98,9 @@ Vec2 Math::projectPerspective(const Vec3& pos)
 Vec2 Math::projectOrthographic(const Vec3& pos)
 {
     return Vec2(pos.x, pos.y);
+}
+
+float Math::toRadian(float angle)
+{
+    return angle * (M_PI / 180);
 }

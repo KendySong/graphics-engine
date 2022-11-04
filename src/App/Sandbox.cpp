@@ -4,19 +4,16 @@
 
 void Sandbox::load()
 {
-	//m_scene.loadModel("../assets/teapot.obj", formatOBJ::fvvv);
-	m_scene.loadModel("../assets/cube.obj", formatOBJ::fvtn);
+	m_scene.loadModel("../assets/teapot.obj", formatOBJ::fvvv);
+	//m_scene.loadModel("../assets/cube.obj", formatOBJ::fvtn);
 
 	camera = Vec3(0, 0, 3);
-	turn = true;
+	cull = true;
 }
 
 void Sandbox::update(float deltaTime)
 {
-
 	angle += deltaTime;
-	
-	
 }
 
 void Sandbox::draw(Graphics& graphics)
@@ -31,20 +28,33 @@ void Sandbox::draw(Graphics& graphics)
 			p2 = sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].b - 1];
 			p3 = sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].c - 1];
 
-			if (turn)
-			{
-				p1 = Math::rotateY(p1, angle);
-				p2 = Math::rotateY(p2, angle);
-				p3 = Math::rotateY(p3, angle);
-			}
+			p1 = Math::rotateY(p1, angle);
+			p2 = Math::rotateY(p2, angle);
+			p3 = Math::rotateY(p3, angle);
 				
-			p1 += camera;
-			p2 += camera;
-			p3 += camera;
+			if (cull) 
+			{
+				if (graphics.cullFace(p1, p2, p3, camera))
+				{
+					p1 += camera;
+					p2 += camera;
+					p3 += camera;
 
-			if (graphics.cullFace(p1, p2, p3, camera))
+					//Project and draw
+					graphics.drawTriangle
+					(
+						Math::projectPerspective(p1),
+						Math::projectPerspective(p2),
+						Math::projectPerspective(p3),
+						0xFF00FF00
+					);
+				}
+			}
+			else 
 			{
-				
+				p1 += camera;
+				p2 += camera;
+				p3 += camera;
 
 				//Project and draw
 				graphics.drawTriangle
@@ -53,12 +63,16 @@ void Sandbox::draw(Graphics& graphics)
 					Math::projectPerspective(p2),
 					Math::projectPerspective(p3),
 					0xFF00FF00
-				);
-			}	
+				);			
+			}
+				
 		}
 	}
 
 	ImGui::Begin("Transform");
-
+		ImGui::SliderFloat("X", &camera.x, -10, 10);
+		ImGui::SliderFloat("Y", &camera.y, -10, 10);
+		ImGui::SliderFloat("Z", &camera.z, -10, 10);
+		ImGui::Checkbox("Cull", &cull);
 	ImGui::End();
 }

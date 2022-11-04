@@ -49,16 +49,29 @@ void Application::pollEvents()
 
 int Application::run()
 {	
+	char m_fpsBuffer[10];
 	while (m_isRunning)
 	{
 		this->pollEvents();
 
-		float deltaTime = m_deltaClock.getElapsedTime() * 0.000001;
+		float deltaTime = m_deltaClock.getElapsedTime();
 		m_deltaClock.restart();
 		m_sandBox.update(deltaTime);
 
+		m_fps++;
+		if (m_framerateClock.getElapsedTime() >= 1)
+		{
+			m_framerateClock.restart();
+			snprintf(m_fpsBuffer, sizeof(m_fpsBuffer), "FPS : %i", m_fps);
+			m_fps = 0;		
+		}
+
 		m_graphics.clear(p_window);
 		m_sandBox.draw(m_graphics);
+		ImGui::Begin("Rendering Info");
+		ImGui::TextUnformatted(m_fpsBuffer);
+		ImGui::Text("Frame time : %f ms", deltaTime * 1000);
+		ImGui::End();
 		m_graphics.render();
 	}
 
