@@ -25,6 +25,8 @@ public :
 
     void drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color);
 
+    bool cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera);
+
     void render() const;
     
 private :
