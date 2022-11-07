@@ -13,7 +13,9 @@ public :
     void operator*=(const Vec2& vec) noexcept;
 
     void operator/=(const Vec2& vec) noexcept;
-    
+
+    void operator/=(float scalar) noexcept;
+
     float x;
     float y;
 };

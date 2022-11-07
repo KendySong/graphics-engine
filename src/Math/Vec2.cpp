@@ -36,6 +36,12 @@ void Vec2::operator/=(const Vec2& vec) noexcept
     this->y /= vec.y;
 }
 
+void Vec2::operator/=(float scalar) noexcept
+{
+    this->x /= scalar;
+    this->y /= scalar;
+}
+
 Vec2 operator+(const Vec2& vec1, const Vec2& vec2)
 {
     return {vec1.x + vec2.x, vec1.y + vec2.y};

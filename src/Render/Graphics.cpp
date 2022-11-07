@@ -73,6 +73,39 @@ void Graphics::drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3
     this->drawLine(pos3, pos1, color);
 }
 
+void Graphics::drawFilledTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
+{  
+    Vec2 p1 = pos1;
+    Vec2 p2 = pos2;
+    Vec2 p3 = pos3;
+    Vec2 temp;
+
+    if (pos1.y > pos2.y)
+    {
+        p1 = pos2;
+        p2 = pos1;
+    }
+
+    if (p2.y > pos3.y)
+    {
+        p3 = p2;
+        p2 = pos3;
+    }
+
+    if (p1.y > p2.y)
+    {
+        temp = p1;
+        p1 = p2;
+        p2 = temp;
+    }
+
+    temp.y = p2.y;
+    temp.x = ((p2.y - p1.y) * (p3.x - p1.x)) / (p3.y - p1.y) + p1.x;
+
+    this->drawFlatBotTriangle(p1, p2, temp, color);
+    this->drawFLatTopTriangle(p2, temp, p3, color);
+}
+
 bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)
 {
     if (Math::dot(Math::normalize(Math::cross(b - a, c - a)), camera - a) > 2)
@@ -93,4 +126,41 @@ void Graphics::render() const
     ImGui::Render();
     ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(p_renderer);
+}
+
+void Graphics::drawFlatBotTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
+{
+    Vec2 delta1 = pos2 - pos1;
+    Vec2 delta2 = pos3 - pos1;
+    float length1 = fabsf(delta1.x) > fabsf(delta1.y) ? fabsf(delta1.x) : fabsf(delta1.y);
+    float length2 = fabsf(delta2.x) > fabsf(delta2.y) ? fabsf(delta2.x) : fabsf(delta2.y);
+    delta1 /= length1;
+    delta2 /= length2;
+
+    Vec2 p1 = pos1;
+    Vec2 p2 = pos1;
+
+    if (fabsf(delta1.x) < fabsf(delta1.y))
+    {
+        for (size_t y = pos1.y; y < pos2.y; y++)
+        {
+            p1 += delta1;
+            p2 += delta2;
+            this->drawLine(p1, p2, color);
+        }
+    }
+    else 
+    {
+        for (size_t y = pos1.x; y < pos2.x; y++)
+        {
+            p1 += delta1;
+            p2 += delta2;
+            this->drawLine(p1, p2, color);
+        }
+    }
+}
+
+void Graphics::drawFLatTopTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
+{
+
 }

@@ -8,6 +8,7 @@
 Application* Application::p_application = nullptr;
 Application::Application()
 {
+	m_fps = 0;
 	m_isRunning = true;
 
 	//Init sdl and graphics
@@ -54,17 +55,17 @@ int Application::run()
 	{
 		this->pollEvents();
 
+		m_fps++;
+		if (m_framerateClock.getElapsedTime() >= 1)
+		{	
+			snprintf(m_fpsBuffer, sizeof(m_fpsBuffer), "FPS : %i", m_fps);
+			m_fps = 0;
+			m_framerateClock.restart();
+		}
+
 		float deltaTime = m_deltaClock.getElapsedTime();
 		m_deltaClock.restart();
 		m_sandBox.update(deltaTime);
-
-		m_fps++;
-		if (m_framerateClock.getElapsedTime() >= 1)
-		{
-			m_framerateClock.restart();
-			snprintf(m_fpsBuffer, sizeof(m_fpsBuffer), "FPS : %i", m_fps);
-			m_fps = 0;		
-		}
 
 		m_graphics.clear(p_window);
 		m_sandBox.draw(m_graphics);
