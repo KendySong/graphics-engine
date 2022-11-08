@@ -18,23 +18,10 @@ void Sandbox::update(float deltaTime)
 
 void Sandbox::draw(Graphics& graphics)
 {
-	int x, y;
-	SDL_GetMouseState(&x, &y);
-
-	graphics.drawTriangle(Vec2(x, y), Vec2(320, 360), Vec2(700, 600), 0xFF00FF00);
-	graphics.drawFilledTriangle(Vec2(x, y), Vec2(320, 360), Vec2(700, 600), 0xFF00FF00);
-
-
-	ImGui::Begin("Debug");
-	Vec2 r = Vec2(320, 360) - Vec2(x, y);
-	ImGui::Text("X : %f", r.x);
-	ImGui::Text("Y : %f", r.y);
-	ImGui::End();
-
 	//graphics.drawTriangle(Vec2(640, 60), Vec2(320, 360), Vec2(700, 600), 0xFF00FF00);
 	//graphics.drawFilledTriangle(Vec2(640, 60), Vec2(320, 360), Vec2(700, 600), 0xFF00FF00);
 
-	/*
+	
 	std::vector<Mesh>& sceneMeshes = m_scene.getMeshes();
 	for (size_t i = 0; i < sceneMeshes.size(); i++)
 	{
@@ -78,7 +65,7 @@ void Sandbox::draw(Graphics& graphics)
 				p3 += camera;
 
 				//Project and draw
-				graphics.drawTriangle
+				graphics.drawFilledTriangle
 				(
 					Math::projectPerspective(p1),
 					Math::projectPerspective(p2),
@@ -96,5 +83,5 @@ void Sandbox::draw(Graphics& graphics)
 		ImGui::SliderFloat("Z", &camera.z, -10, 10);
 		ImGui::Checkbox("Cull", &cull);
 	ImGui::End();
-	*/
+	
 }
