@@ -69,9 +69,10 @@ int Application::run()
 
 		m_graphics.clear(p_window);
 		m_sandBox.draw(m_graphics);
+
 		ImGui::Begin("Rendering Info");
-		ImGui::TextUnformatted(m_fpsBuffer);
-		ImGui::Text("Frame time : %f ms", deltaTime * 1000);
+			ImGui::TextUnformatted(m_fpsBuffer);
+			ImGui::Text("Frame time : %f ms", deltaTime * 1000);
 		ImGui::End();
 		m_graphics.render();
 	}

@@ -21,11 +21,12 @@ Vec2 Math::normalize(const Vec2 & vec) noexcept
 
 Vec3 Math::cross(const Vec3& vec1, const Vec3& vec2) noexcept
 {
-    Vec3 cross;
-    cross.x = vec1.y * vec2.z - vec1.z * vec2.y;
-    cross.y = vec1.z * vec2.x - vec1.x * vec2.z;
-    cross.z = vec1.x * vec2.y - vec1.y * vec2.x;
-    return cross;
+    return 
+    { 
+        vec1.y * vec2.z - vec1.z * vec2.y, 
+        vec1.z * vec2.x - vec1.x * vec2.z, 
+        vec1.x * vec2.y - vec1.y * vec2.x 
+    };
 }
 
 float Math::dot(const Vec3& vec1, const Vec3& vec2) noexcept
@@ -86,6 +87,17 @@ Vec3 Math::rotateZ(const Vec3& vec, float angle)
     return rotated;  
 }
 
+
+Mat4 Math::identity() noexcept
+{
+    Mat4 mat4(0);
+    mat4.mat[0][0] = 1;
+    mat4.mat[1][1] = 1;
+    mat4.mat[2][2] = 1;
+    mat4.mat[3][3] = 1;
+    return mat4;
+}
+
 Vec2 Math::projectPerspective(const Vec3& pos)
 {
     return Vec2
@@ -104,3 +116,4 @@ float Math::toRadian(float angle)
 {
     return angle * (M_PI / 180);
 }
+

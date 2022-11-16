@@ -1,6 +1,7 @@
 #pragma once
 #include "Vec2.hpp"
 #include "Vec3.hpp"
+#include "Mat4.hpp"
 
 class Math
 {
@@ -26,6 +27,9 @@ public :
     static Vec3 rotateY(const Vec3& vec, float angle);
 
     static Vec3 rotateZ(const Vec3& vec, float angle);
+
+    //Matrix
+    static Mat4 identity() noexcept;
 
     //Projection
     static Vec2 projectPerspective(const Vec3& pos);

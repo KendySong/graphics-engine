@@ -109,13 +109,53 @@ void Graphics::drawFilledTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2
 
 bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)
 {
-    if (Math::dot(Math::normalize(Math::cross(b - a, c - a)), camera - a) > 2)
+    if (Math::dot(Math::normalize(Math::cross(b - a, c - a)), camera - a) > 0)
     {
-        return true;
+        return false;
     }
     else 
     {
-        return false;
+        return true;
+    }
+}
+
+void Graphics::sortDepthFace(Mesh* mesh)
+{
+    bool isSort = false;
+    std::vector<float> avgValues;
+
+    avgValues.reserve(mesh->faceIndex.size());
+    for (size_t i = 0; i < mesh->faceIndex.size(); i++)
+    {
+        float avg = (mesh->vertex[mesh->faceIndex[i].a].z + mesh->vertex[mesh->faceIndex[i].b].z + mesh->vertex[mesh->faceIndex[i].c].z) / 3;
+        avgValues.push_back(avg);
+    }
+    
+    while (!isSort)
+    {
+        isSort = true;
+        for (size_t i = 0; i < mesh->faceIndex.size() - 1; i++)
+        {
+            if (avgValues[i] < avgValues[i + 1])
+            {
+                isSort = false;
+                break;
+            }
+        }
+
+        for (size_t i = 0; i < avgValues.size() - 1; i++)
+        {
+            if (avgValues[i] < avgValues[i + 1])
+            {
+                Face tempFace(mesh->faceIndex[i].a, mesh->faceIndex[i].b, mesh->faceIndex[i].c);
+                mesh->faceIndex[i] = mesh->faceIndex[i + 1];
+                mesh->faceIndex[i + 1] = tempFace;
+
+                float temp = avgValues[i];
+                avgValues[i] = avgValues[i + 1];
+                avgValues[i + 1] = temp;            
+            }
+        }
     }
 }
 
@@ -139,12 +179,13 @@ void Graphics::drawFlatBotTriangle(const Vec2& pos1, const Vec2& pos2, const Vec
     delta1 /= fabsf(delta1.y);
     delta2 /= fabsf(delta2.y);
  
-    //Fill flat bottom triangle
-    for (size_t y = pos1.y; y < pos2.y; y++)
-    {
+    //Fill flat bottom triangle 
+    //Start at pos1.y + 1 for avoid artefacts
+    for (size_t y = pos1.y + 1; y < pos2.y; y++)
+    {  
+        this->drawLine(p1, p2, color);
         p1 += delta1;
         p2 += delta2;
-        this->drawLine(p1, p2, color);
     }
 }
 
@@ -152,15 +193,16 @@ void Graphics::drawFLatTopTriangle(const Vec2& pos1, const Vec2& pos2, const Vec
 {
     Vec2 p1 = pos1;
     Vec2 p2 = pos2;
-    Vec2 delta1 = pos1 - pos3;
-    Vec2 delta2 = pos2 - pos3;
+    Vec2 delta1 = pos3 - pos1;
+    Vec2 delta2 = pos3 - pos2;
     delta1 /= fabsf(delta1.y);
     delta2 /= fabsf(delta2.y);
 
     for (size_t i = pos3.y; i > pos2.y; i--)
     {
-        p1 -= delta1;
-        p2 -= delta2;
+        
         this->drawLine(p1, p2, color);
+        p1 += delta1;
+        p2 += delta2;
     }
 }

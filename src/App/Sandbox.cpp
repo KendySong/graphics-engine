@@ -4,84 +4,53 @@
 
 void Sandbox::load()
 {
-	//m_scene.loadModel("../assets/teapot.obj", formatOBJ::fvvv);
-	m_scene.loadModel("../assets/cube.obj", formatOBJ::fvtn);
+	m_scene.loadModel("../assets/teapot.obj", formatOBJ::fvvv);
+	m_scene.getMeshes()[m_scene.getMeshes().size() - 1].position = Vec3(0, 0, 3.5);
 
-	camera = Vec3(0, 0, 3);
-	cull = true;
+	//m_scene.loadModel("../assets/f22.obj", formatOBJ::fvtn);
+	//m_scene.getMeshes()[m_scene.getMeshes().size() - 1].position = Vec3(0, 0, 3.5);
+
+	m_angle = 0;
+	m_camera = Vec3(0, 0, 0);
 }
 
 void Sandbox::update(float deltaTime)
 {
-	angle += deltaTime;
+	m_angle += deltaTime;	
 }
 
 void Sandbox::draw(Graphics& graphics)
 {
-	//graphics.drawTriangle(Vec2(640, 60), Vec2(320, 360), Vec2(700, 600), 0xFF00FF00);
-	//graphics.drawFilledTriangle(Vec2(640, 60), Vec2(320, 360), Vec2(700, 600), 0xFF00FF00);
-
-	
-	std::vector<Mesh>& sceneMeshes = m_scene.getMeshes();
-	for (size_t i = 0; i < sceneMeshes.size(); i++)
+	std::vector<Mesh>& scene = m_scene.getMeshes();
+	for (size_t i = 0; i < scene.size(); i++)
 	{
-		for (size_t j = 0; j < sceneMeshes[i].faceIndex.size(); j++)
+		for (size_t j = 0; j < scene[i].faceIndex.size(); j++)
 		{
-			Vec3 p1, p2, p3;
-			p1 = sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].a - 1];
-			p2 = sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].b - 1];
-			p3 = sceneMeshes[i].vertex[sceneMeshes[i].faceIndex[j].c - 1];
+			Face& face = scene[i].faceIndex[j];
 
-			p1 = Math::rotateY(p1, angle);
-			p2 = Math::rotateY(p2, angle);
-			p3 = Math::rotateY(p3, angle);
-				
-			p1 = Math::rotateX(p1, angle);
-			p2 = Math::rotateX(p2, angle);
-			p3 = Math::rotateX(p3, angle);
+			Vec3 p0 = Math::rotateY(scene[i].vertex[face.a - 1], m_angle);
+			Vec3 p1 = Math::rotateY(scene[i].vertex[face.b - 1], m_angle);
+			Vec3 p2 = Math::rotateY(scene[i].vertex[face.c - 1], m_angle);
 
-			if (cull) 
+			p0 += scene[i].position;
+			p1 += scene[i].position;
+			p2 += scene[i].position;
+
+			if (graphics.cullFace(p0, p1, p2, m_camera))
 			{
-				if (graphics.cullFace(p1, p2, p3, camera))
-				{
-					p1 += camera;
-					p2 += camera;
-					p3 += camera;
-
-					//Project and draw
-					graphics.drawTriangle
-					(
-						Math::projectPerspective(p1),
-						Math::projectPerspective(p2),
-						Math::projectPerspective(p3),
-						0xFF00FF00
-					);
-				}
+				m_toRender.emplace_back(Math::projectPerspective(p0), Math::projectPerspective(p1), Math::projectPerspective(p2));
 			}
-			else 
-			{
-				p1 += camera;
-				p2 += camera;
-				p3 += camera;
-
-				//Project and draw
-				graphics.drawFilledTriangle
-				(
-					Math::projectPerspective(p1),
-					Math::projectPerspective(p2),
-					Math::projectPerspective(p3),
-					0xFF00FF00
-				);			
-			}
-				
 		}
 	}
 
-	ImGui::Begin("Transform");
-		ImGui::SliderFloat("X", &camera.x, -10, 10);
-		ImGui::SliderFloat("Y", &camera.y, -10, 10);
-		ImGui::SliderFloat("Z", &camera.z, -10, 10);
-		ImGui::Checkbox("Cull", &cull);
-	ImGui::End();
-	
+	for (size_t i = 0; i < m_toRender.size(); i++)
+	{
+		graphics.drawTriangle(
+			m_toRender[i].a,
+			m_toRender[i].b,
+			m_toRender[i].c,
+			0xFF00FF00
+		);
+	}
+	m_toRender.clear();
 }

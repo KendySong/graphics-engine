@@ -1,4 +1,5 @@
 #pragma once 
+#include "../Render/Triangle.hpp"
 #include "../Render/Scene.hpp"
 #include "../Render/Graphics.hpp"
 
@@ -15,9 +16,7 @@ public :
 
 private :
 	Scene m_scene;
-
-	Vec3 pos;
-	Vec3 camera;
-	float angle = 0;
-	bool cull;
+	float m_angle;
+	Vec3 m_camera;
+	std::vector<Triangle> m_toRender;
 };
