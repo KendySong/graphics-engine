@@ -17,6 +17,10 @@ public :
 private :
 	Scene m_scene;
 	float m_angle;
+
 	Vec3 m_camera;
-	std::vector<Triangle> m_toRender;
+	float aspect;
+	float angle;
+	float zNear;
+	float zFar;
 };

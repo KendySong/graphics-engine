@@ -1,11 +1,14 @@
+#pragma once
+#include "Vec2.hpp"
 #include "Vec3.hpp"
 
-#pragma once
 class Mat4
 {
 public :
-    Mat4();
+    Mat4() = default;
     Mat4(float init);
 
-    float mat[4][4];
+    float m[4][4] = {0};
 };
+
+Mat4 operator*(const Mat4& m1, const Mat4& m2);

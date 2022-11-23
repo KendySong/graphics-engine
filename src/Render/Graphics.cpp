@@ -75,41 +75,46 @@ void Graphics::drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3
 
 void Graphics::drawFilledTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
 {  
-    Vec2 p1 = pos1;
-    Vec2 p2 = pos2;
-    Vec2 p3 = pos3;
-    Vec2 temp;
-
-    //Sort vertex order
-    if (pos1.y > pos2.y)
+    Vec2 mid;
+    Vec2 vertex[3];
+    vertex[0] = pos1;
+    vertex[1] = pos2;
+    vertex[2] = pos3;
+    
+    bool isSort = false;
+    while (!isSort)
     {
-        p1 = pos2;
-        p2 = pos1;
+        isSort = true;
+        for (size_t i = 0; i < 2; i++)
+        {
+            if (vertex[i].y > vertex[i + 1].y)
+            {
+                isSort = false;
+                break;
+            }
+        }
+
+        for (size_t i = 0; i < 2; i++)
+        {
+            if (vertex[i].y > vertex[i + 1].y)
+            {
+                Vec2 temp = vertex[i];
+                vertex[i] = vertex[i + 1];
+                vertex[i + 1] = temp;
+            }
+        }
     }
 
-    if (p2.y > pos3.y)
-    {
-        p3 = p2;
-        p2 = pos3;
-    }
+    mid.y = vertex[1].y;
+    mid.x = ((vertex[1].y - vertex[0].y) * (vertex[2].x - vertex[0].x)) / (vertex[2].y - vertex[0].y) + vertex[0].x;
 
-    if (p1.y > p2.y)
-    {
-        temp = p1;
-        p1 = p2;
-        p2 = temp;
-    }
-
-    temp.y = p2.y;
-    temp.x = ((p2.y - p1.y) * (p3.x - p1.x)) / (p3.y - p1.y) + p1.x;
-
-    this->drawFlatBotTriangle(p1, p2, temp, color);
-    this->drawFLatTopTriangle(p2, temp, p3, color);
+    this->drawFlatBotTriangle(vertex[0], vertex[1], mid, color);
+    this->drawFLatTopTriangle(vertex[1], mid, vertex[2], color);
 }
 
 bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)
 {
-    if (Math::dot(Math::normalize(Math::cross(b - a, c - a)), camera - a) > 0)
+    if (Math::dot(Math::cross(b - a, c - a), camera - a) > 0)
     {
         return false;
     }
@@ -121,42 +126,7 @@ bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3&
 
 void Graphics::sortDepthFace(Mesh* mesh)
 {
-    bool isSort = false;
-    std::vector<float> avgValues;
-
-    avgValues.reserve(mesh->faceIndex.size());
-    for (size_t i = 0; i < mesh->faceIndex.size(); i++)
-    {
-        float avg = (mesh->vertex[mesh->faceIndex[i].a].z + mesh->vertex[mesh->faceIndex[i].b].z + mesh->vertex[mesh->faceIndex[i].c].z) / 3;
-        avgValues.push_back(avg);
-    }
     
-    while (!isSort)
-    {
-        isSort = true;
-        for (size_t i = 0; i < mesh->faceIndex.size() - 1; i++)
-        {
-            if (avgValues[i] < avgValues[i + 1])
-            {
-                isSort = false;
-                break;
-            }
-        }
-
-        for (size_t i = 0; i < avgValues.size() - 1; i++)
-        {
-            if (avgValues[i] < avgValues[i + 1])
-            {
-                Face tempFace(mesh->faceIndex[i].a, mesh->faceIndex[i].b, mesh->faceIndex[i].c);
-                mesh->faceIndex[i] = mesh->faceIndex[i + 1];
-                mesh->faceIndex[i + 1] = tempFace;
-
-                float temp = avgValues[i];
-                avgValues[i] = avgValues[i + 1];
-                avgValues[i + 1] = temp;            
-            }
-        }
-    }
 }
 
 void Graphics::render() const
@@ -178,11 +148,10 @@ void Graphics::drawFlatBotTriangle(const Vec2& pos1, const Vec2& pos2, const Vec
     Vec2 delta2 = pos3 - pos1;
     delta1 /= fabsf(delta1.y);
     delta2 /= fabsf(delta2.y);
- 
+
     //Fill flat bottom triangle 
-    //Start at pos1.y + 1 for avoid artefacts
     for (size_t y = pos1.y + 1; y < pos2.y; y++)
-    {  
+    {
         this->drawLine(p1, p2, color);
         p1 += delta1;
         p2 += delta2;
@@ -193,16 +162,16 @@ void Graphics::drawFLatTopTriangle(const Vec2& pos1, const Vec2& pos2, const Vec
 {
     Vec2 p1 = pos1;
     Vec2 p2 = pos2;
-    Vec2 delta1 = pos3 - pos1;
-    Vec2 delta2 = pos3 - pos2;
+    Vec2 delta1 = pos1 - pos3;
+    Vec2 delta2 = pos2 - pos3;
     delta1 /= fabsf(delta1.y);
     delta2 /= fabsf(delta2.y);
 
-    for (size_t i = pos3.y; i > pos2.y; i--)
+    float length = pos3.y - pos2.y;
+    for (size_t y = 0; y < length; y++)
     {
-        
         this->drawLine(p1, p2, color);
-        p1 += delta1;
-        p2 += delta2;
-    }
+        p1 -= delta1;
+        p2 -= delta2;
+    }   
 }
