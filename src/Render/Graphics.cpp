@@ -1,5 +1,9 @@
 #include <cstring>
 
+#include <ImGui/imgui.h>
+#include <ImGui/imgui_impl_sdl.h>
+#include <ImGui/imgui_impl_sdlrenderer.h>
+
 #include "Graphics.hpp"
 #include "../Settings.hpp"
 
@@ -15,11 +19,15 @@ void Graphics::setFrameBuffer(std::uint32_t* frameBuffer) noexcept
     p_frameBuffer = frameBuffer;
 }
 
-void Graphics::clear() const
+void Graphics::clear(SDL_Window* window) const
 {
     SDL_SetRenderDrawColor(p_renderer, 0, 0, 0, 255);
     SDL_RenderClear(p_renderer);
     memset(p_frameBuffer, 0, stg::WIDTH * stg::HEIGHT * sizeof std::uint32_t);
+
+    ImGui_ImplSDLRenderer_NewFrame();
+    ImGui_ImplSDL2_NewFrame(window);
+    ImGui::NewFrame();
 }
 
 void Graphics::drawPixel(const Vec2& position, std::uint32_t color)
@@ -56,7 +64,6 @@ void Graphics::drawRect(const Vec2& pos, const Vec2& size, std::uint32_t color)
             this->drawPixel(Vec2(x, y), color);
         }
     }
-    
 }
 
 void Graphics::drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
@@ -66,9 +73,105 @@ void Graphics::drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3
     this->drawLine(pos3, pos1, color);
 }
 
+void Graphics::drawFilledTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
+{  
+    Vec2 mid;
+    Vec2 vertex[3];
+    vertex[0] = pos1;
+    vertex[1] = pos2;
+    vertex[2] = pos3;
+    
+    bool isSort = false;
+    while (!isSort)
+    {
+        isSort = true;
+        for (size_t i = 0; i < 2; i++)
+        {
+            if (vertex[i].y > vertex[i + 1].y)
+            {
+                isSort = false;
+                break;
+            }
+        }
+
+        for (size_t i = 0; i < 2; i++)
+        {
+            if (vertex[i].y > vertex[i + 1].y)
+            {
+                Vec2 temp = vertex[i];
+                vertex[i] = vertex[i + 1];
+                vertex[i + 1] = temp;
+            }
+        }
+    }
+
+    mid.y = vertex[1].y;
+    mid.x = ((vertex[1].y - vertex[0].y) * (vertex[2].x - vertex[0].x)) / (vertex[2].y - vertex[0].y) + vertex[0].x;
+
+    this->drawFlatBotTriangle(vertex[0], vertex[1], mid, color);
+    this->drawFLatTopTriangle(vertex[1], mid, vertex[2], color);
+}
+
+bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)
+{
+    if (Math::dot(Math::cross(b - a, c - a), camera - a) > 0)
+    {
+        return false;
+    }
+    else 
+    {
+        return true;
+    }
+}
+
+void Graphics::sortDepthFace(Mesh* mesh)
+{
+    
+}
+
 void Graphics::render() const
 {
     SDL_UpdateTexture(p_frameTexture, NULL, p_frameBuffer, stg::WIDTH * sizeof std::uint32_t);
     SDL_RenderCopy(p_renderer, p_frameTexture, NULL, NULL);
+
+    ImGui::Render();
+    ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
     SDL_RenderPresent(p_renderer);
+}
+
+void Graphics::drawFlatBotTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
+{
+    //Compute slope
+    Vec2 p1 = pos1;
+    Vec2 p2 = pos1;
+    Vec2 delta1 = pos2 - pos1;
+    Vec2 delta2 = pos3 - pos1;
+    delta1 /= fabsf(delta1.y);
+    delta2 /= fabsf(delta2.y);
+
+    //Fill flat bottom triangle 
+    for (size_t y = pos1.y + 1; y < pos2.y; y++)
+    {
+        this->drawLine(p1, p2, color);
+        p1 += delta1;
+        p2 += delta2;
+    }
+}
+
+void Graphics::drawFLatTopTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color)
+{
+    Vec2 p1 = pos1;
+    Vec2 p2 = pos2;
+    Vec2 delta1 = pos1 - pos3;
+    Vec2 delta2 = pos2 - pos3;
+    delta1 /= fabsf(delta1.y);
+    delta2 /= fabsf(delta2.y);
+
+    float length = pos3.y - pos2.y;
+    for (size_t y = 0; y < length; y++)
+    {
+        this->drawLine(p1, p2, color);
+        p1 -= delta1;
+        p2 -= delta2;
+    }   
 }

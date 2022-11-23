@@ -1,6 +1,8 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include "Math.hpp"
+#include "../Settings.hpp"
 
 float Math::dot(const Vec2& vec1, const Vec2& vec2) noexcept
 {
@@ -20,11 +22,12 @@ Vec2 Math::normalize(const Vec2 & vec) noexcept
 
 Vec3 Math::cross(const Vec3& vec1, const Vec3& vec2) noexcept
 {
-    Vec3 cross;
-    cross.x = vec1.y * vec2.z - vec1.z * vec2.y;
-    cross.y = vec1.z * vec2.x - vec1.x * vec2.z;
-    cross.z = vec1.x * vec2.y - vec1.y * vec2.x;
-    return cross;
+    return 
+    {
+        vec1.y * vec2.z - vec1.z * vec2.y, 
+        vec1.z * vec2.x - vec1.x * vec2.z, 
+        vec1.x * vec2.y - vec1.y * vec2.x 
+    };
 }
 
 float Math::dot(const Vec3& vec1, const Vec3& vec2) noexcept
@@ -85,16 +88,35 @@ Vec3 Math::rotateZ(const Vec3& vec, float angle)
     return rotated;  
 }
 
-Vec2 Math::projectPerspective(const Vec3& pos)
+Mat4 Math::identity() noexcept
 {
+    Mat4 mat4(0);
+    mat4.m[0][0] = 1;
+    mat4.m[1][1] = 1;
+    mat4.m[2][2] = 1;
+    mat4.m[3][3] = 1;
+    return mat4;
+}
+
+Vec2 Math::projectPerspective(Vec3& pos, float angle, float zNear, float zFar, float aspect)
+{
+    float fov = 1 / tan(angle / 2);
+    pos.x *= fov * aspect;
+    pos.y *= fov;
+
     return Vec2
     {
-        (pos.x * 128 / pos.z) + 640,
-        (pos.y * 128 / pos.z) + 360,
+        (pos.x * stg::HALF_WIDTH / pos.z) + stg::HALF_WIDTH,
+        (pos.y * stg::HALF_HEIGHT / pos.z) + stg::HALF_HEIGHT
     };
 }
 
 Vec2 Math::projectOrthographic(const Vec3& pos)
 {
     return Vec2(pos.x, pos.y);
+}
+
+float Math::toRadian(float angle)
+{
+    return angle * (M_PI / 180);
 }

@@ -7,11 +7,9 @@ public :
     Vec3(float x, float y, float z);
 
     void operator+=(const Vec3& vec) noexcept;
-
     void operator-=(const Vec3& vec) noexcept;
-
     void operator*=(const Vec3& vec) noexcept;
-
+    void operator*=(float scalar) noexcept;
     void operator/=(const Vec3& vec) noexcept;
 
     float x;

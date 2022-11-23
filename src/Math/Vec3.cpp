@@ -35,6 +35,13 @@ void Vec3::operator*=(const Vec3& vec) noexcept
     this->z *= vec.z;
 }
 
+void Vec3::operator*=(float scalar) noexcept
+{
+    this->x *= scalar;
+    this->y *= scalar;
+    this->z *= scalar;
+}
+
 void Vec3::operator/=(const Vec3& vec) noexcept
 {
     this->x /= vec.x;
