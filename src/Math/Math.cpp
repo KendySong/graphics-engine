@@ -98,25 +98,26 @@ Mat4 Math::identity() noexcept
     return mat4;
 }
 
-Vec2 Math::projectPerspective(Vec3& pos, float angle, float zNear, float zFar, float aspect)
+Vec2 Math::projectPerspective(const Vec3& pos, float angle, float zNear, float zFar, float aspect)
 {
     float fov = 1 / tan(angle / 2);
-    pos.x *= fov * aspect;
-    pos.y *= fov;
+    Vec2 screenPos(pos.x, pos.y);
+    screenPos.x *= fov * aspect;
+    screenPos.y *= fov;
 
     return Vec2
     {
-        (pos.x * stg::HALF_WIDTH / pos.z) + stg::HALF_WIDTH,
-        (pos.y * stg::HALF_HEIGHT / pos.z) + stg::HALF_HEIGHT
+        (screenPos.x * stg::HALF_WIDTH / pos.z) + stg::HALF_WIDTH,
+        (screenPos.y * stg::HALF_HEIGHT / pos.z) + stg::HALF_HEIGHT
     };
 }
 
-Vec2 Math::projectOrthographic(const Vec3& pos)
+Vec2 Math::projectOrthographic(const Vec3& pos) noexcept
 {
     return Vec2(pos.x, pos.y);
 }
 
-float Math::toRadian(float angle)
+float Math::toRadian(float angle) noexcept
 {
     return angle * (M_PI / 180);
 }

@@ -26,9 +26,9 @@ public :
     static Mat4 identity() noexcept;
 
     //Projection
-    static Vec2 projectPerspective(Vec3& pos, float angle, float zNear, float zFar, float aspect);
-    static Vec2 projectOrthographic(const Vec3& pos);
+    static Vec2 projectPerspective(const Vec3& pos, float angle, float zNear, float zFar, float aspect);
+    static Vec2 projectOrthographic(const Vec3& pos) noexcept;
 
     //Misc
-    static float toRadian(float angle);
+    static float toRadian(float angle) noexcept;
 };

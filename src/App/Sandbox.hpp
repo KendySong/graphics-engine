@@ -1,4 +1,5 @@
 #pragma once 
+#include "../Render/Light/DirectionalLight.hpp"
 #include "../Render/Triangle.hpp"
 #include "../Render/Scene.hpp"
 #include "../Render/Graphics.hpp"
@@ -17,6 +18,7 @@ public :
 private :
 	Scene m_scene;
 	float m_angle;
+	DirectionalLight m_light;
 
 	Vec3 m_camera;
 	float aspect;

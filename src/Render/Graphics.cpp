@@ -6,9 +6,14 @@
 
 #include "Graphics.hpp"
 #include "../Settings.hpp"
+#include "Color.hpp"
+
+#include <iostream>
+#include <random>
 
 Graphics::Graphics(SDL_Renderer* renderer)
 {
+    srand(0);
     p_renderer = renderer;
     p_frameBuffer = new std::uint32_t[stg::WIDTH * stg::HEIGHT];
     p_frameTexture = SDL_CreateTexture(p_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, stg::WIDTH, stg::HEIGHT);
@@ -110,6 +115,26 @@ void Graphics::drawFilledTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2
 
     this->drawFlatBotTriangle(vertex[0], vertex[1], mid, color);
     this->drawFLatTopTriangle(vertex[1], mid, vertex[2], color);
+}
+
+std::uint32_t Graphics::computeDirectionalLight(const DirectionalLight& light, const Vec3& surface, const Vec3& normal)
+{
+    /*
+    std::uint32_t materialColor = WHITE;
+
+    Vec3 ray = light.position - surface;
+    float dot = Math::dot(Math::normalize(normal), ray);
+    */
+
+    std::uint32_t r = 0x00FF0000;
+    std::uint32_t g = 0x0000FF00;
+    std::uint32_t b = 0x000000FF;
+
+    //multipy dot with color of light and material
+
+    std::uint32_t finalColor = 0xFF000000 | (std::uint32_t)r | (std::uint32_t)g | (std::uint32_t)b;
+
+    return finalColor;
 }
 
 bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)

@@ -1,0 +1,9 @@
+git clone
+composer install
+composer update
+config .env
+php artisan key:generate
+php artisan migrate --seed
+
+
+php artisan migrate:reset

@@ -2,10 +2,16 @@
 #include <ImGui/imgui.h>
 
 #include "Sandbox.hpp"
+#include "../Render/Light/DirectionalLight.hpp"
 #include "../Settings.hpp"
+#include "../Render/Color.hpp"
 
 void Sandbox::load()
 {
+	m_light.position = Vec3(0, 0, 2);
+	m_light.color = 0xFFFF0000;
+
+	//Model loading
 	m_scene.loadModel("../assets/teapot.obj", formatOBJ::fvvv);
 	m_scene.getMeshes()[m_scene.getMeshes().size() - 1].position = Vec3(0, -1, 5);
 
@@ -13,11 +19,11 @@ void Sandbox::load()
 	m_scene.getMeshes()[m_scene.getMeshes().size() - 1].position = Vec3(4.5, 0, 5.5);
 
 	m_scene.loadModel("../assets/f22.obj", formatOBJ::fvtn);
-	m_scene.getMeshes()[m_scene.getMeshes().size() - 1].position = Vec3(-4.5, 0, 5.5);
+	m_scene.getMeshes()[m_scene.getMeshes().size() - 1].position = Vec3(-4.5, 0, 5.5);	
 
+	//Camera
 	m_angle = 0;
 	m_camera = Vec3(0, 0, 0);
-
 	aspect = (float)stg::HEIGHT / (float)stg::WIDTH;
 	angle = 90;
 	zNear = 0.1f;
@@ -35,6 +41,13 @@ void Sandbox::draw(Graphics& graphics)
 	ImGui::SliderFloat("Angle", &angle, 1, 90);
 	ImGui::SliderFloat("zNear", &zNear, 0.0, 20);
 	ImGui::SliderFloat("zFar", &zFar, 1, 1000);
+	ImGui::End();
+
+	ImGui::Begin("Light");
+	ImGui::Text("Light color : R(%i) G(%i) B(%i)", (m_light.color & 0x00FF0000) >> 16, (m_light.color & 0x0000FF00) >> 8, (m_light.color & 0x000000FF));
+	ImGui::SliderFloat("X", &m_light.position.x, 1, 90);
+	ImGui::SliderFloat("Y", &m_light.position.y, 1, 90);
+	ImGui::SliderFloat("Z", &m_light.position.z, 1, 90);
 	ImGui::End();
 
 	std::vector<Mesh>& scene = m_scene.getMeshes();
@@ -57,31 +70,17 @@ void Sandbox::draw(Graphics& graphics)
 			p0 += scene[i].position;
 			p1 += scene[i].position;
 			p2 += scene[i].position;
-
-			graphics.drawTriangle
-			(
-				Math::projectPerspective(p0, Math::toRadian(-angle), zNear, zFar, aspect),
-				Math::projectPerspective(p1, Math::toRadian(-angle), zNear, zFar, aspect),
-				Math::projectPerspective(p2, Math::toRadian(-angle), zNear, zFar, aspect),
-				0xFFAA00FF
-			);
-
-			/*
+		
 			if (graphics.cullFace(p0, p1, p2, m_camera))
-			{	
-				
+			{
 				graphics.drawFilledTriangle
 				(
-					Math::projectPerspective(p0),
-					Math::projectPerspective(p1),
-					Math::projectPerspective(p2),
-					0xFFFFFFFF
-				);				
-
-							
+					Math::projectPerspective(p0, Math::toRadian(-angle), zNear, zFar, aspect),
+					Math::projectPerspective(p1, Math::toRadian(-angle), zNear, zFar, aspect),
+					Math::projectPerspective(p2, Math::toRadian(-angle), zNear, zFar, aspect),
+					graphics.computeDirectionalLight(m_light, p0, Math::cross(p1, p2))
+				);
 			}
-			*/
-			
 		}
 	}
 	

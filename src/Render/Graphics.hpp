@@ -7,6 +7,7 @@
 #include "Face.hpp"
 #include "Mesh.hpp"
 #include "../Math/Math.hpp"
+#include "Light/DirectionalLight.hpp"
 
 class Graphics
 {
@@ -24,6 +25,8 @@ public :
     void drawRect(const Vec2& pos, const Vec2& size, std::uint32_t color);
     void drawTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color);
     void drawFilledTriangle(const Vec2& pos1, const Vec2& pos2, const Vec2& pos3, std::uint32_t color);
+
+    std::uint32_t computeDirectionalLight(const DirectionalLight& light, const Vec3& surface, const Vec3& normal);
 
     bool cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera);
 
