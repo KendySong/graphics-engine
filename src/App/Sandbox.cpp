@@ -8,7 +8,7 @@
 
 void Sandbox::load()
 {
-	m_light.position = Vec3(0, 0, 2);
+	m_light.position = Vec3(0, 0, -1);
 	m_light.color = 0xFFFF0000;
 
 	//Model loading
@@ -23,16 +23,19 @@ void Sandbox::load()
 
 	//Camera
 	m_angle = 0;
-	m_camera = Vec3(0, 0, 0);
+	m_camera = new Camera(10, 10);
+
 	aspect = (float)stg::HEIGHT / (float)stg::WIDTH;
 	angle = 90;
 	zNear = 0.1f;
 	zFar = 100;
 }
 
-void Sandbox::update(float deltaTime)
+void Sandbox::update(float deltaTime, SDL_Event& event)
 {
 	m_angle += deltaTime;	
+
+	m_camera->processMovement(deltaTime);
 }
 
 void Sandbox::draw(Graphics& graphics)
@@ -70,15 +73,20 @@ void Sandbox::draw(Graphics& graphics)
 			p0 += scene[i].position;
 			p1 += scene[i].position;
 			p2 += scene[i].position;
+
+			Vec3 camPos = m_camera->getPosition();
+			p0 += camPos;
+			p1 += camPos;
+			p2 += camPos;
 		
-			if (graphics.cullFace(p0, p1, p2, m_camera))
+			if (/*graphics.cullFace(p0, p1, p2, m_camera)*/ true)
 			{
-				graphics.drawFilledTriangle
+				graphics.drawTriangle
 				(
 					Math::projectPerspective(p0, Math::toRadian(-angle), zNear, zFar, aspect),
 					Math::projectPerspective(p1, Math::toRadian(-angle), zNear, zFar, aspect),
 					Math::projectPerspective(p2, Math::toRadian(-angle), zNear, zFar, aspect),
-					graphics.computeDirectionalLight(m_light, p0, Math::cross(p1, p2))
+					WHITE
 				);
 			}
 		}

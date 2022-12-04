@@ -43,7 +43,7 @@ void Application::pollEvents()
 		{
 		case SDL_QUIT :
 			m_isRunning = false;
-			break;
+			break;		
 		}
 	}
 }
@@ -65,7 +65,7 @@ int Application::run()
 
 		float deltaTime = m_deltaClock.getElapsedTime();
 		m_deltaClock.restart();
-		m_sandBox.update(deltaTime);
+		m_sandBox.update(deltaTime, m_event);
 
 		m_graphics.clear(p_window);
 		m_sandBox.draw(m_graphics);
