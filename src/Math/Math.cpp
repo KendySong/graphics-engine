@@ -67,9 +67,9 @@ Vec3 Math::rotateY(const Vec3& vec, float angle)
 
     Vec3 rotated
     {
-        length * sin(angle),
+        length * cos(angle),
         vec.y,
-        length * cos(angle)
+        length * sin(angle)
     };
     return rotated;
 }

@@ -23,27 +23,30 @@ void Sandbox::load()
 
 	//Camera
 	m_angle = 0;
-	m_camera = new Camera(10, 10);
+	m_camera = new Camera(10, 1);
 
 	aspect = (float)stg::HEIGHT / (float)stg::WIDTH;
 	angle = 90;
-	zNear = 0.1f;
-	zFar = 100;
 }
 
 void Sandbox::update(float deltaTime, SDL_Event& event)
 {
 	m_angle += deltaTime;	
-
 	m_camera->processMovement(deltaTime);
 }
 
 void Sandbox::draw(Graphics& graphics)
 {
 	ImGui::Begin("Camera");
-	ImGui::SliderFloat("Angle", &angle, 1, 90);
-	ImGui::SliderFloat("zNear", &zNear, 0.0, 20);
-	ImGui::SliderFloat("zFar", &zFar, 1, 1000);
+	ImGui::TextUnformatted("Position");
+	ImGui::Separator();
+	ImGui::InputFloat("x", &m_camera->getPosition().x);
+
+	ImGui::InputFloat("y", &m_camera->getPosition().y);
+	ImGui::InputFloat("z", &m_camera->getPosition().z);
+
+
+	ImGui::SliderFloat("fov", &angle, 1, 90);
 	ImGui::End();
 
 	ImGui::Begin("Light");
@@ -65,7 +68,7 @@ void Sandbox::draw(Graphics& graphics)
 
 		for (size_t j = 0; j < scene[i].faceIndex.size(); j++)
 		{
-			Face& face = scene[i].faceIndex[j];
+			const Face& face = scene[i].faceIndex[j];
 			Vec3 p0 = Math::rotateY(scene[i].vertex[face.a - 1], m_angle);
 			Vec3 p1 = Math::rotateY(scene[i].vertex[face.b - 1], m_angle);
 			Vec3 p2 = Math::rotateY(scene[i].vertex[face.c - 1], m_angle);
@@ -74,11 +77,21 @@ void Sandbox::draw(Graphics& graphics)
 			p1 += scene[i].position;
 			p2 += scene[i].position;
 
-			Vec3 camPos = m_camera->getPosition();
+			const Vec3 camPos = m_camera->getPosition();
+			const Vec3 camRotation = m_camera->getRotation();
+
+			p0 = Math::rotateX(p0, camRotation.x);
+			p1 = Math::rotateX(p1, camRotation.x);
+			p2 = Math::rotateX(p2, camRotation.x);
+
+			p0 = Math::rotateY(p0, camRotation.y);
+			p1 = Math::rotateY(p1, camRotation.y);
+			p2 = Math::rotateY(p2, camRotation.y);	
+
 			p0 += camPos;
 			p1 += camPos;
 			p2 += camPos;
-		
+
 			if (/*graphics.cullFace(p0, p1, p2, m_camera)*/ true)
 			{
 				graphics.drawTriangle
