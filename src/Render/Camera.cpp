@@ -14,99 +14,40 @@ Camera::Camera(float speed, float sensitivity)
 
 void Camera::processMovement(float deltatime) noexcept
 {
-	
 	//W
 	if (GetAsyncKeyState(87) == -32768)
-	{
-		m_position -= m_front * deltatime * m_speed;
-	}
-
-	//A
-	if (GetAsyncKeyState(65) == -32768)
-	{
-		m_position.x -= deltatime * m_speed;
-	}
-
-	//S
-	if (GetAsyncKeyState(83) == -32768)
 	{
 		m_position += m_front * deltatime * m_speed;
 	}
 
-	//D
-	if (GetAsyncKeyState(68) == -32768)
-	{
-		m_position.x += deltatime * m_speed;
-	}
-
-	//Space
-	if (GetAsyncKeyState(32) == -32768)
-	{
-		m_position.y -= deltatime * m_speed;
-	}
-
-	//Shift
-	if (GetAsyncKeyState(VK_SHIFT) == -32768)
-	{
-		m_position.y += deltatime * m_speed;
-	}
-
-	if (GetAsyncKeyState(VK_LEFT) == -32768)
-	{
-
-		m_rotation.y += deltatime * m_sensitivity;
-	}
-
-	if (GetAsyncKeyState(VK_RIGHT) == -32768)
-	{
-		m_rotation.y -= deltatime * m_sensitivity;
-	}
-
-	if (GetAsyncKeyState(VK_UP) == -32768)
-	{
-		m_rotation.x -= deltatime * m_sensitivity;
-	}
-
-	if (GetAsyncKeyState(VK_DOWN) == -32768)
-	{
-		m_rotation.x += deltatime * m_sensitivity;
-	}
-
-	/* m_position += m_front;
-	//W
-	if (GetAsyncKeyState(87) == -32768)
-	{
-		m_position.z -= deltatime * m_speed;
-	}
-
 	//A
 	if (GetAsyncKeyState(65) == -32768)
 	{
-		m_position.x -= deltatime * m_speed;
+		m_position -= Math::cross(m_front, m_up) * deltatime * m_speed;
 	}
 
 	//S
 	if (GetAsyncKeyState(83) == -32768)
 	{
-		m_position.z += deltatime * m_speed;
+		m_position -= m_front * deltatime * m_speed;
 	}
 
 	//D
 	if (GetAsyncKeyState(68) == -32768)
 	{
-		m_position.x += deltatime * m_speed;
+		m_position += Math::cross(m_front, m_up) * deltatime * m_speed;
 	}
 
 	//Space
 	if (GetAsyncKeyState(32) == -32768)
 	{
-		m_position.y -= deltatime * m_speed;
+		m_position.y += deltatime * m_speed;
 	}
 
 	//Shift
 	if (GetAsyncKeyState(VK_SHIFT) == -32768)
 	{
-		m_position.y += deltatime * m_speed;
+		m_position.y -= deltatime * m_speed;
 	}
 
 	if (GetAsyncKeyState(VK_LEFT) == -32768)
@@ -129,7 +70,11 @@ void Camera::processMovement(float deltatime) noexcept
 	{
 		m_rotation.x += deltatime * m_sensitivity;
 	}
-	*/
+
+	m_front.z = cos(m_rotation.y);
+	m_front.y = sin(-m_rotation.x);
+	m_front.x = sin(m_rotation.y);
+	m_front = Math::normalize(m_front);
 }
 
 Vec3& Camera::getPosition() noexcept
@@ -140,4 +85,8 @@ Vec3& Camera::getPosition() noexcept
 Vec3& Camera::getRotation() noexcept
 {
 	return m_rotation;
+}
+Vec3& Camera::getDirection() noexcept
+{
+	return m_front;
 }

@@ -43,7 +43,16 @@ void Application::pollEvents()
 		{
 		case SDL_QUIT :
 			m_isRunning = false;
-			break;		
+			break;	
+
+		case SDL_KEYDOWN :
+			switch (m_event.key.keysym.sym)
+			{
+			case SDLK_ESCAPE :
+				m_isRunning = false;
+				break;
+			}
+			break;
 		}
 	}
 }

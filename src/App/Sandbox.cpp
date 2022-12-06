@@ -37,15 +37,21 @@ void Sandbox::update(float deltaTime, SDL_Event& event)
 
 void Sandbox::draw(Graphics& graphics)
 {
+	const Vec3& camPos = m_camera->getPosition();
+	const Vec3& camRotation = m_camera->getRotation();
+
 	ImGui::Begin("Camera");
 	ImGui::TextUnformatted("Position");
 	ImGui::Separator();
-	ImGui::InputFloat("x", &m_camera->getPosition().x);
+	ImGui::Text("X[%f] Y[%f] Z[%f]", m_camera->getPosition().x, m_camera->getPosition().y, m_camera->getPosition().z);
 
-	ImGui::InputFloat("y", &m_camera->getPosition().y);
-	ImGui::InputFloat("z", &m_camera->getPosition().z);
+	ImGui::TextUnformatted("Rotation");
+	ImGui::Separator();
+	ImGui::Text("X[%f] Y[%f] Z[%f]", m_camera->getRotation().x, m_camera->getRotation().y, m_camera->getRotation().z);
 
-
+	ImGui::TextUnformatted("Direction");
+	ImGui::Separator();
+	ImGui::Text("X[%f] Y[%f] Z[%f]", m_camera->getDirection().x, m_camera->getDirection().y, m_camera->getDirection().z);
 	ImGui::SliderFloat("fov", &angle, 1, 90);
 	ImGui::End();
 
@@ -59,40 +65,30 @@ void Sandbox::draw(Graphics& graphics)
 	std::vector<Mesh>& scene = m_scene.getMeshes();
 	for (size_t i = 0; i < scene.size(); i++)
 	{
-		std::string name = "Transform[" + std::to_string(i) + "]";
-		ImGui::Begin(name.c_str());
-		ImGui::InputFloat("X", &scene[i].position.x);
-		ImGui::InputFloat("Y", &scene[i].position.y);
-		ImGui::InputFloat("Z", &scene[i].position.z);
-		ImGui::End();
-
 		for (size_t j = 0; j < scene[i].faceIndex.size(); j++)
 		{
-			const Face& face = scene[i].faceIndex[j];
+			const Face& face = scene[i].faceIndex[j];			
+
 			Vec3 p0 = Math::rotateY(scene[i].vertex[face.a - 1], m_angle);
 			Vec3 p1 = Math::rotateY(scene[i].vertex[face.b - 1], m_angle);
 			Vec3 p2 = Math::rotateY(scene[i].vertex[face.c - 1], m_angle);
 
 			p0 += scene[i].position;
 			p1 += scene[i].position;
-			p2 += scene[i].position;
+			p2 += scene[i].position;	
 
-			const Vec3 camPos = m_camera->getPosition();
-			const Vec3 camRotation = m_camera->getRotation();
+			p0 -= camPos;
+			p1 -= camPos;
+			p2 -= camPos;
 
+			p0 = Math::rotateY(p0, camRotation.y);
+			p1 = Math::rotateY(p1, camRotation.y);
+			p2 = Math::rotateY(p2, camRotation.y);
 			p0 = Math::rotateX(p0, camRotation.x);
 			p1 = Math::rotateX(p1, camRotation.x);
 			p2 = Math::rotateX(p2, camRotation.x);
 
-			p0 = Math::rotateY(p0, camRotation.y);
-			p1 = Math::rotateY(p1, camRotation.y);
-			p2 = Math::rotateY(p2, camRotation.y);	
-
-			p0 += camPos;
-			p1 += camPos;
-			p2 += camPos;
-
-			if (/*graphics.cullFace(p0, p1, p2, m_camera)*/ true)
+			if (graphics.cullFace(p0, p1, p2, camPos))
 			{
 				graphics.drawTriangle
 				(

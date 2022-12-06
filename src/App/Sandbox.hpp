@@ -22,7 +22,6 @@ private :
 	DirectionalLight m_light;
 
 	Camera* m_camera;
-	//Vec3 m_camera;
 	float aspect;
 	float angle;
 	float zNear;
