@@ -6,4 +6,6 @@ namespace stg
 	static const char* TITLE = "Graphics engine";
 	static const float HALF_WIDTH = WIDTH / 2;
 	static const float HALF_HEIGHT = HEIGHT / 2;
+
+	static float fov = 90;
 }

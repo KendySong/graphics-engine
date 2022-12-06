@@ -98,12 +98,12 @@ Mat4 Math::identity() noexcept
     return mat4;
 }
 
-Vec2 Math::projectPerspective(const Vec3& pos, float angle, float zNear, float zFar, float aspect)
+Vec2 Math::projectPerspective(const Vec3& pos, float fov, float aspect)
 {
-    float fov = 1 / tan(angle / 2);
+    float fovRatio = 1 / tan(fov / 2);
     Vec2 screenPos(pos.x, pos.y);
-    screenPos.x *= fov * aspect;
-    screenPos.y *= fov;
+    screenPos.x *= fovRatio * aspect;
+    screenPos.y *= fovRatio;
 
     return Vec2
     {

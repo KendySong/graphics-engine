@@ -16,6 +16,7 @@ private :
 	Vec3 m_rotation;
 	Vec3 m_front;
 	Vec3 m_up;
+	float m_rotationLimit;
 	float m_speed;
 	float m_sensitivity;
 };

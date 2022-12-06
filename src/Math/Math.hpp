@@ -26,7 +26,7 @@ public :
     static Mat4 identity() noexcept;
 
     //Projection
-    static Vec2 projectPerspective(const Vec3& pos, float angle, float zNear, float zFar, float aspect);
+    static Vec2 projectPerspective(const Vec3& pos, float fov, float aspect);
     static Vec2 projectOrthographic(const Vec3& pos) noexcept;
 
     //Misc

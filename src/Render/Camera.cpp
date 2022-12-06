@@ -10,6 +10,8 @@ Camera::Camera(float speed, float sensitivity)
 	m_sensitivity = sensitivity;
 	m_up = Vec3(0, 1, 0);
 	m_front = Vec3(0, 0, 1);
+
+	m_rotationLimit = Math::toRadian(90);
 }
 
 void Camera::processMovement(float deltatime) noexcept
@@ -69,6 +71,16 @@ void Camera::processMovement(float deltatime) noexcept
 	if (GetAsyncKeyState(VK_DOWN) == -32768)
 	{
 		m_rotation.x += deltatime * m_sensitivity;
+	}
+
+	if (m_rotation.x > m_rotationLimit)
+	{
+		m_rotation.x = m_rotationLimit;
+	}
+
+	if (m_rotation.x < -m_rotationLimit)
+	{
+		m_rotation.x = -m_rotationLimit;
 	}
 
 	m_front.z = cos(m_rotation.y);

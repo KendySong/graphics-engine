@@ -124,7 +124,7 @@ std::uint32_t Graphics::computeDirectionalLight(const DirectionalLight& light, c
 
 bool Graphics::cullFace(const Vec3& a, const Vec3& b, const Vec3& c, const Vec3& camera)
 {
-    if (Math::dot(Math::cross(b - a, c - a), camera - a) > 0)
+    if (Math::dot(Math::cross(c - a, b - a), camera - a) > 0)
     {
         return false;
     }
