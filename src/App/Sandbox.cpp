@@ -41,6 +41,9 @@ void Sandbox::draw(Graphics& graphics)
 	ImGui::TextUnformatted("Transform");
 	ImGui::Separator();
 
+	ImGui::InputFloat3("[X][Y][Z] Direction", &m_camera->getDirection().x);
+	ImGui::InputFloat3("[X][Y][Z] Rotation", &camRotation.x);
+
 	ImGui::TextUnformatted("Position");
 	ImGui::SameLine();
 	ImGui::PushItemWidth(175);

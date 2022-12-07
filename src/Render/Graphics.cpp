@@ -8,9 +8,6 @@
 #include "../Settings.hpp"
 #include "Color.hpp"
 
-#include <iostream>
-#include <random>
-
 Graphics::Graphics(SDL_Renderer* renderer)
 {
     srand(0);

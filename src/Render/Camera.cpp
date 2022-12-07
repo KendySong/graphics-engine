@@ -52,6 +52,9 @@ void Camera::processMovement(float deltatime) noexcept
 		m_position.y -= deltatime * m_speed;
 	}
 
+
+
+
 	if (GetAsyncKeyState(VK_LEFT) == -32768)
 	{
 
@@ -82,11 +85,10 @@ void Camera::processMovement(float deltatime) noexcept
 	{
 		m_rotation.x = -m_rotationLimit;
 	}
-
-	m_front.z = cos(m_rotation.y);
+	
+	m_front.x = sin(m_rotation.y) * cos(m_rotation.x);
 	m_front.y = sin(-m_rotation.x);
-	m_front.x = sin(m_rotation.y);
-	m_front = Math::normalize(m_front);
+	m_front.z = cos(m_rotation.y) * cos(m_rotation.x);
 }
 
 Vec3& Camera::getPosition() noexcept
