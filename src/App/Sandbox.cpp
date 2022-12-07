@@ -20,7 +20,7 @@ void Sandbox::load()
 
 	//Camera
 	m_angle = 0;
-	m_camera = new Camera(10, 1);
+	m_camera = new Camera(10, 0.01);
 
 	//Projection
 	aspect = (float)stg::HEIGHT / (float)stg::WIDTH;

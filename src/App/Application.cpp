@@ -23,8 +23,6 @@ Application::Application()
 	ImGui_ImplSDL2_InitForSDLRenderer(p_window, renderer);
 	ImGui_ImplSDLRenderer_Init(renderer);
 
-	
-
 	m_sandBox.load();
 }
 
@@ -39,6 +37,7 @@ Application* Application::instance() noexcept
 
 void Application::pollEvents()
 {
+	
 	while (SDL_PollEvent(&m_event))
 	{
 		ImGui_ImplSDL2_ProcessEvent(&m_event);
@@ -56,12 +55,6 @@ void Application::pollEvents()
 				break;
 			}
 			break;
-
-		case SDL_MOUSEMOTION:
-			SDL_WarpMouseInWindow(p_window, stg::HALF_WIDTH, stg::HALF_HEIGHT);
-			m_deltaMouse.x = m_event.motion.xrel;
-			m_deltaMouse.y = m_event.motion.xrel;		
-			break;
 		}
 	}
 }
@@ -71,6 +64,7 @@ int Application::run()
 	char m_fpsBuffer[10];
 	while (m_isRunning)
 	{
+		SDL_WarpMouseInWindow(p_window, stg::HALF_WIDTH, stg::HALF_HEIGHT);
 		this->pollEvents();
 
 		m_fps++;
@@ -96,9 +90,4 @@ int Application::run()
 	}
 
 	return EXIT_SUCCESS;
-}
-
-Vec2& Application::getDeltaMouse() noexcept 
-{
-	return m_deltaMouse;
 }

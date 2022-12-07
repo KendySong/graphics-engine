@@ -3,8 +3,8 @@
 #include <SDL/SDL.h>
 
 #include "Camera.hpp"
+#include "../Settings.hpp"
 #include "../Math/Math.hpp"
-#include "../App/Application.hpp"
 
 Camera::Camera(float speed, float sensitivity) 
 {
@@ -14,6 +14,8 @@ Camera::Camera(float speed, float sensitivity)
 	m_front = Vec3(0, 0, 1);
 
 	m_rotationLimit = Math::toRadian(90);
+
+	m_firstMovement = true;
 }
 
 void Camera::processMovement(float deltatime) noexcept
@@ -54,31 +56,11 @@ void Camera::processMovement(float deltatime) noexcept
 		m_position.y -= deltatime * m_speed;
 	}
 
+	this->processRotation();
+}
 
-
-	/*
-	if (GetAsyncKeyState(VK_LEFT) == -32768)
-	{
-
-		m_rotation.y += deltatime * m_sensitivity;
-	}
-
-	if (GetAsyncKeyState(VK_RIGHT) == -32768)
-	{
-		m_rotation.y -= deltatime * m_sensitivity;
-	}
-
-	if (GetAsyncKeyState(VK_UP) == -32768)
-	{
-		m_rotation.x -= deltatime * m_sensitivity;
-	}
-
-	if (GetAsyncKeyState(VK_DOWN) == -32768)
-	{
-		m_rotation.x += deltatime * m_sensitivity;
-	}
-	*/	
-
+void Camera::processRotation() noexcept
+{
 	if (m_rotation.x > m_rotationLimit)
 	{
 		m_rotation.x = m_rotationLimit;
@@ -89,12 +71,26 @@ void Camera::processMovement(float deltatime) noexcept
 		m_rotation.x = -m_rotationLimit;
 	}
 
-	m_rotation.x += Application::instance()->getDeltaMouse().y * 0.0001f;
-	m_rotation.y += Application::instance()->getDeltaMouse().x * 0.0001f;
+	if (m_firstMovement)
+	{
+		m_lastMousePos.x = stg::HALF_WIDTH;
+		m_lastMousePos.y = stg::HALF_HEIGHT;
+		m_firstMovement = false;
+	}
+
+	int x, y;
+	SDL_GetMouseState(&x, &y);
+
+	Vec2 mousePos(x, y);
+	Vec2 offset = mousePos - m_lastMousePos;
+	m_rotation.y -= offset.x * m_sensitivity;
+	m_rotation.x += offset.y * m_sensitivity;
 
 	m_front.x = sin(m_rotation.y) * cos(m_rotation.x);
 	m_front.y = sin(-m_rotation.x);
 	m_front.z = cos(m_rotation.y) * cos(m_rotation.x);
+
+	m_front = Math::normalize(m_front);
 }
 
 Vec3& Camera::getPosition() noexcept
