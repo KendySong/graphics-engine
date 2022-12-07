@@ -10,6 +10,7 @@ public :
 	Vec3& getPosition() noexcept;
 	Vec3& getRotation() noexcept;
 	Vec3& getDirection() noexcept;
+	float& getSensitivity() noexcept;
 
 private :
 	Vec3 m_position;

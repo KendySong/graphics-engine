@@ -12,9 +12,11 @@ private :
 	Application();
 
 public :
-	static Application* instance();
+	static Application* instance() noexcept;
 
 	int run();
+
+	Vec2& getDeltaMouse() noexcept;
 
 private :
 	void pollEvents();
@@ -23,6 +25,7 @@ private :
 	Graphics m_graphics;
 	SDL_Window* p_window;
 	SDL_Event m_event;
+	Vec2 m_deltaMouse;
 	bool m_isRunning;
 
 	Timer m_deltaClock;

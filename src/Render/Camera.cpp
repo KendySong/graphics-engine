@@ -1,8 +1,10 @@
 #include <windows.h>
+#include <iostream>
 #include <SDL/SDL.h>
 
 #include "Camera.hpp"
 #include "../Math/Math.hpp"
+#include "../App/Application.hpp"
 
 Camera::Camera(float speed, float sensitivity) 
 {
@@ -54,7 +56,7 @@ void Camera::processMovement(float deltatime) noexcept
 
 
 
-
+	/*
 	if (GetAsyncKeyState(VK_LEFT) == -32768)
 	{
 
@@ -75,6 +77,7 @@ void Camera::processMovement(float deltatime) noexcept
 	{
 		m_rotation.x += deltatime * m_sensitivity;
 	}
+	*/	
 
 	if (m_rotation.x > m_rotationLimit)
 	{
@@ -85,7 +88,10 @@ void Camera::processMovement(float deltatime) noexcept
 	{
 		m_rotation.x = -m_rotationLimit;
 	}
-	
+
+	m_rotation.x += Application::instance()->getDeltaMouse().y * 0.0001f;
+	m_rotation.y += Application::instance()->getDeltaMouse().x * 0.0001f;
+
 	m_front.x = sin(m_rotation.y) * cos(m_rotation.x);
 	m_front.y = sin(-m_rotation.x);
 	m_front.z = cos(m_rotation.y) * cos(m_rotation.x);
@@ -100,7 +106,13 @@ Vec3& Camera::getRotation() noexcept
 {
 	return m_rotation;
 }
+
 Vec3& Camera::getDirection() noexcept
 {
 	return m_front;
+}
+
+float& Camera::getSensitivity() noexcept 
+{
+	return m_sensitivity;
 }

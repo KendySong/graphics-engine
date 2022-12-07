@@ -15,6 +15,7 @@ Application::Application()
 	SDL_Init(SDL_INIT_EVERYTHING);
 	p_window = SDL_CreateWindow(stg::TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, stg::WIDTH, stg::HEIGHT, SDL_WINDOW_SHOWN);
 	SDL_Renderer* renderer = SDL_CreateRenderer(p_window, -1, 0);
+	SDL_SetRelativeMouseMode(SDL_TRUE);
 	m_graphics = Graphics(renderer);
 
 	IMGUI_CHECKVERSION();
@@ -22,10 +23,12 @@ Application::Application()
 	ImGui_ImplSDL2_InitForSDLRenderer(p_window, renderer);
 	ImGui_ImplSDLRenderer_Init(renderer);
 
+	
+
 	m_sandBox.load();
 }
 
-Application* Application::instance()
+Application* Application::instance() noexcept
 {
 	if (p_application == nullptr)
 	{
@@ -52,6 +55,12 @@ void Application::pollEvents()
 				m_isRunning = false;
 				break;
 			}
+			break;
+
+		case SDL_MOUSEMOTION:
+			SDL_WarpMouseInWindow(p_window, stg::HALF_WIDTH, stg::HALF_HEIGHT);
+			m_deltaMouse.x = m_event.motion.xrel;
+			m_deltaMouse.y = m_event.motion.xrel;		
 			break;
 		}
 	}
@@ -87,4 +96,9 @@ int Application::run()
 	}
 
 	return EXIT_SUCCESS;
+}
+
+Vec2& Application::getDeltaMouse() noexcept 
+{
+	return m_deltaMouse;
 }
