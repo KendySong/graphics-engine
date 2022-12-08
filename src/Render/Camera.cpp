@@ -14,7 +14,6 @@ Camera::Camera(float speed, float sensitivity)
 	m_front = Vec3(0, 0, 1);
 
 	m_rotationLimit = Math::toRadian(90);
-
 	m_firstMovement = true;
 }
 
